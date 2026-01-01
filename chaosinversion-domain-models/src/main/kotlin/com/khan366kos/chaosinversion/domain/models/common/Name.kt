@@ -5,4 +5,6 @@ value class Name(private val value: String) {
     companion object {
         val NONE = Name("")
     }
+
+    fun asString() = value
 }

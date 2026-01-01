@@ -17,7 +17,6 @@ class ProjectService {
     ): ReadPaginationResponse<ProjectTransport> {
         context.setQuery(request)
 
-        // Generate mock projects for demonstration
         val allProjects = (1..100).map {
             Project(
                 id = Id("project-$it"), name = Name("Project $it")

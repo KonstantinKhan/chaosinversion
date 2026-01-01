@@ -10,6 +10,7 @@ include("chaosinversion-domain-models")
 include("chaosinversion-model-mappers")
 include("chaosinversion-project-service")
 include("chaosinversion-postgresql")
+include("chaosinversion-inmemory")
 
 dependencyResolutionManagement {
     repositories {
