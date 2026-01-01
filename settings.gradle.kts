@@ -9,6 +9,7 @@ include("chaosinversion-transport-models")
 include("chaosinversion-domain-models")
 include("chaosinversion-model-mappers")
 include("chaosinversion-project-service")
+include("chaosinversion-postgresql")
 
 dependencyResolutionManagement {
     repositories {

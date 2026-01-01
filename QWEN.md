@@ -13,13 +13,14 @@ ChaosInversion is a Ktor-based web application built using Kotlin. It's a multi-
 
 The project consists of the following modules:
 
-| module                            | description                                                                    | docs                                                                                    |
-|-----------------------------------|--------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| `chaosinversion-ktor-app`         | The main Ktor server app                                                       | [chaosinversion-ktor-app](./docs/modules/chaosinversion-ktor-app.md)                    |
-| `chaosinversion-transport-models` | The common module containing data models and serialization definitions         | [chaosinversion-transport-models.md](./docs/modules/chaosinversion-transport-models.md) |
-| `chaosinversion-domain-models`    | The module containing core business entities and domain models                 | [chaosinversion-domain-models.md](./docs/modules/chaosinversion-domain-models.md)       |
-| `chaosinversion-model-mappers`    | The module providing bidirectional mapping between transport and domain models | [chaosinversion-model-mappers.md](./docs/modules/chaosinversion-model-mappers.md)       |
+| module                            | description                                                                                              | docs                                                                                    |
+|-----------------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| `chaosinversion-ktor-app`         | The main Ktor server app                                                                                 | [chaosinversion-ktor-app](./docs/modules/chaosinversion-ktor-app.md)                    |
+| `chaosinversion-transport-models` | The common module containing data models and serialization definitions                                   | [chaosinversion-transport-models.md](./docs/modules/chaosinversion-transport-models.md) |
+| `chaosinversion-domain-models`    | The module containing core business entities and domain models                                           | [chaosinversion-domain-models.md](./docs/modules/chaosinversion-domain-models.md)       |
+| `chaosinversion-model-mappers`    | The module providing bidirectional mapping between transport and domain models                           | [chaosinversion-model-mappers.md](./docs/modules/chaosinversion-model-mappers.md)       |
 | `chaosinversion-project-service`  | The module containing business logic and service layer implementations for project-related functionality | [chaosinversion-project-service.md](./docs/modules/chaosinversion-project-service.md)   |
+| `chaosinversion-postgresql`       | The module containing database access layer implementation using PostgreSQL                              | [chaosinversion-postgresql](./docs/modules/chaosinversion-postgresql.md)                |
 
 ## Technologies Used
 
@@ -47,11 +48,11 @@ The project consists of the following modules:
 
 ### Build Commands
 
-| Command                                 | Description                                   |
-|-----------------------------------------|-----------------------------------------------|
-| `./gradlew test`                        | Run the tests                                 |
-| `./gradlew build`                       | Build everything                              |
-| `./gradlew run`                         | Run the server                                |
+| Command           | Description      |
+|-------------------|------------------|
+| `./gradlew test`  | Run the tests    |
+| `./gradlew build` | Build everything |
+| `./gradlew run`   | Run the server   |
 
 ## Configuration
 
