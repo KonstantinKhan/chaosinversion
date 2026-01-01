@@ -6,11 +6,12 @@ import com.khan366kos.chaosinversion.domain.models.db.DbReadProjectRequest
 import com.khan366kos.chaosinversion.domain.models.db.DbReadProjectResponse
 import com.khan366kos.chaosinversion.domain.models.project.Project
 
-interface ProjectRepository {
+interface IProjectRepository {
     suspend fun create(project: Project): Project
     suspend fun findById(id: Id): Project?
     suspend fun findByName(name: Name): Project?
-    suspend fun findAll(request: DbReadProjectRequest): DbReadProjectResponse
+    suspend fun projects(request: DbReadProjectRequest): DbReadProjectResponse
     suspend fun update(project: Project): Project?
     suspend fun delete(id: Id): Boolean
+    suspend fun size(): Int
 }

@@ -20,6 +20,7 @@ dependencies {
     implementation(projects.chaosinversionTransportModels)
     implementation(projects.chaosinversionModelMappers)
     implementation(projects.chaosinversionProjectService)
+    implementation(projects.chaosinversionInmemory)
 
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)

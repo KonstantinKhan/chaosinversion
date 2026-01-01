@@ -2,18 +2,18 @@ package com.khan366kos.chaosinversion.inmemory.project.repository
 
 import com.khan366kos.chaosinversion.domain.models.common.Id
 import com.khan366kos.chaosinversion.domain.models.common.Name
-import com.khan366kos.chaosinversion.domain.models.common.Status
+import com.khan366kos.chaosinversion.domain.models.common.ResponseStatus
 import com.khan366kos.chaosinversion.domain.models.db.DbReadProjectRequest
 import com.khan366kos.chaosinversion.domain.models.db.DbReadProjectResponse
 import com.khan366kos.chaosinversion.domain.models.project.Project
-import com.khan366kos.chaosinversion.domain.models.project.repository.ProjectRepository
+import com.khan366kos.chaosinversion.domain.models.project.repository.IProjectRepository
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.ConcurrentHashMap
 
 class InMemoryProjectRepository(
-    val initProjects: List<Project> = emptyList(),
-) : ProjectRepository {
+     initProjects: List<Project> = emptyList(),
+) : IProjectRepository {
     private val mutex = Mutex()
     private val projects = ConcurrentHashMap<Id, Project>()
 
@@ -49,12 +49,12 @@ class InMemoryProjectRepository(
         }
     }
 
-    override suspend fun findAll(request: DbReadProjectRequest): DbReadProjectResponse {
+    override suspend fun projects(request: DbReadProjectRequest): DbReadProjectResponse {
         return mutex.withLock {
             val pagination = request.pagination
 
             if (pagination.startIndex < 0 || pagination.size <= 0) {
-                return@withLock DbReadProjectResponse(status = Status.SUCCESS, pagination = pagination)
+                return@withLock DbReadProjectResponse(status = ResponseStatus.SUCCESS, pagination = pagination)
             }
 
             projects.values.asSequence().sortedBy { it.name.asString() }
@@ -62,7 +62,7 @@ class InMemoryProjectRepository(
                 .take(pagination.size)
                 .toList().let {
                     DbReadProjectResponse(
-                        status = Status.SUCCESS,
+                        status = ResponseStatus.SUCCESS,
                         result = it,
                         pagination = pagination
                     )
@@ -86,6 +86,8 @@ class InMemoryProjectRepository(
             projects.remove(id) != null
         }
     }
+
+    override suspend fun size(): Int = projects.size
 
     private fun generateId(): String {
         return "inmemory-${System.currentTimeMillis()}-${(Math.random() * 10_000).toInt()}"

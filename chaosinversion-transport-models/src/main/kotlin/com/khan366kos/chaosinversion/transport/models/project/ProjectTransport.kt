@@ -1,6 +1,6 @@
 package com.khan366kos.chaosinversion.transport.models.project
 
-import com.khan366kos.chaosinversion.transport.models.common.IBaseMessage
+import com.khan366kos.chaosinversion.transport.models.description.DescriptionTransport
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 data class ProjectTransport(
     @SerialName("id")
     val id: String,
-    @SerialName("descriptionId")
-    val descriptionId: String? = null,
+    @SerialName("description")
+    val description: DescriptionTransport,
     @SerialName("teamId")
     val teamId: String? = null,
     @SerialName("companyId")

@@ -9,7 +9,6 @@ import com.khan366kos.chaosinversion.domain.models.project.Project
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.test.runTest
 
 class InMemoryProjectRepositoryTest : ShouldSpec({
@@ -83,18 +82,43 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
 
         should("find all projects with default pagination") {
             runTest {
-                val response = repository.findAll(DbReadProjectRequest())
+                val response = repository.projects(DbReadProjectRequest())
                 response.result.size shouldBe response.pagination.size
             }
         }
 
         should("find all projects with custom pagination") {
             runTest {
-                val response = repository.findAll(
+                val response = repository.projects(
                     DbReadProjectRequest(
                         pagination = Pagination(page = 1, size = 20),
-                    ))
-                response.result.size shouldBe response.pagination.size
+                    )
+                )
+                val size = repository.size()
+                val paginationSize = size -
+                        response.pagination.size * (response.pagination.page + 1) - response.pagination.size
+
+                response.result.size shouldBe minOf(response.pagination.size, paginationSize)
+            }
+        }
+
+        should("find all projects with custom pagination and smaller size") {
+            runTest {
+                val response = repository.projects(
+                    DbReadProjectRequest(
+                        pagination = Pagination(page = 6, size = 16),
+                    )
+                )
+                val size = repository.size()
+                if (response.pagination.startIndex > size) response.result.size shouldBe 0
+                else
+                    if (response.pagination.endIndex > size) {
+                        val paginationSize = size -
+                                (response.pagination.size * (response.pagination.page + 1) - response.pagination.size)
+                        response.result.size shouldBe paginationSize
+                    } else {
+                        response.result.size shouldBe response.pagination.size
+                    }
             }
         }
 

@@ -1,6 +1,6 @@
 package com.khan366kos.chaosinversion.domain.models.common
 
-enum class Status {
+enum class ResponseStatus {
     UNKNOWN,
     SUCCESS,
     FAILURE,
