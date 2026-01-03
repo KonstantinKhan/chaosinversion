@@ -2,7 +2,7 @@ package com.khan366kos.chaosinversion.ktor.app.helpers
 
 import com.khan366kos.chaosinversion.domain.models.AppContext
 import com.khan366kos.chaosinversion.transport.models.common.IBaseMessage
-import io.ktor.http.HttpStatusCode
+import com.khan366kos.chaosinversion.transport.models.common.RequestError
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
 import kotlinx.serialization.json.Json
@@ -20,7 +20,11 @@ suspend inline fun <reified T : IBaseMessage, reified U : IBaseMessage> Applicat
             val response = context.block(request)
             respond(response)
         },
-        onFailure = { respond(HttpStatusCode.BadRequest) }
+        onFailure = { throwable ->
+            respond(RequestError(
+                message = throwable.message?: "Unknown error",
+            ))
+        }
     )
 }
 

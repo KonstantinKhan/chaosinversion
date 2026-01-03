@@ -6,8 +6,10 @@ import com.khan366kos.chaosinversion.domain.models.common.Pagination
 import com.khan366kos.chaosinversion.domain.models.project.Project
 import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationRequest
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
+import java.util.UUID
 
 fun AppContext.setQuery(request: ReadPaginationRequest) = apply {
+    requestId = request.requestId?.let { Id(it) } ?: Id(UUID.randomUUID())
     paginationRequest = request.toDomain()
 }
 

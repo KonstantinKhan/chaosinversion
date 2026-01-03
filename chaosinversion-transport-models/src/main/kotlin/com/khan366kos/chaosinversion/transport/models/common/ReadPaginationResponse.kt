@@ -7,6 +7,12 @@ import kotlinx.serialization.Serializable
 data class ReadPaginationResponse<T>(
     @SerialName("messageType")
     override val messageType: String,
+    @SerialName("requestId")
+    override val requestId: String,
+    @SerialName("result")
+    override val result: ResultResponseTransport,
+    @SerialName("errors")
+    override val errors: List<RequestError>,
     @SerialName("data")
     val data: List<T>,
     @SerialName("page")
@@ -17,4 +23,4 @@ data class ReadPaginationResponse<T>(
     val totalElements: Int? = null,
     @SerialName("totalPages")
     val totalPages: Int? = null,
-) : IBaseMessage
+) : IBaseMessage, IBaseResponse
