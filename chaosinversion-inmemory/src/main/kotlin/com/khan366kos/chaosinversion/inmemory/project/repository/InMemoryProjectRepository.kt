@@ -1,18 +1,21 @@
 package com.khan366kos.chaosinversion.inmemory.project.repository
 
+import com.khan366kos.chaosinversion.domain.models.common.Error
 import com.khan366kos.chaosinversion.domain.models.common.Id
 import com.khan366kos.chaosinversion.domain.models.common.Name
 import com.khan366kos.chaosinversion.domain.models.common.ResponseStatus
-import com.khan366kos.chaosinversion.domain.models.db.DbReadProjectRequest
-import com.khan366kos.chaosinversion.domain.models.db.DbReadProjectResponse
+import com.khan366kos.chaosinversion.domain.models.project.repository.DbReadProjectsRequest
+import com.khan366kos.chaosinversion.domain.models.project.repository.DbReadProjectsResponse
 import com.khan366kos.chaosinversion.domain.models.project.Project
+import com.khan366kos.chaosinversion.domain.models.project.repository.DbReadProjectIdRequest
+import com.khan366kos.chaosinversion.domain.models.project.repository.DbReadProjectResponse
 import com.khan366kos.chaosinversion.domain.models.project.repository.IProjectRepository
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.ConcurrentHashMap
 
 class InMemoryProjectRepository(
-     initProjects: List<Project> = emptyList(),
+    initProjects: List<Project> = emptyList(),
 ) : IProjectRepository {
     private val mutex = Mutex()
     private val projects = ConcurrentHashMap<Id, Project>()
@@ -37,10 +40,22 @@ class InMemoryProjectRepository(
         }
     }
 
-    override suspend fun findById(id: Id): Project? {
-        return mutex.withLock {
-            projects[id]
+    override suspend fun project(request: DbReadProjectIdRequest): DbReadProjectResponse {
+
+        val result = mutex.withLock {
+            projects[request.projectId] ?: Project()
         }
+        return if (result != Project())
+            DbReadProjectResponse(
+                status = ResponseStatus.SUCCESS,
+                result = result,
+            )
+        else DbReadProjectResponse(
+            status = ResponseStatus.FAILURE,
+            errors = listOf(
+                Error(message = "Not found project with id: ${request.projectId}", field = "projectId"),
+            )
+        )
     }
 
     override suspend fun findByName(name: Name): Project? {
@@ -49,19 +64,19 @@ class InMemoryProjectRepository(
         }
     }
 
-    override suspend fun projects(request: DbReadProjectRequest): DbReadProjectResponse {
+    override suspend fun projects(request: DbReadProjectsRequest): DbReadProjectsResponse {
         return mutex.withLock {
             val pagination = request.pagination
 
             if (pagination.startIndex < 0 || pagination.size <= 0) {
-                return@withLock DbReadProjectResponse(status = ResponseStatus.SUCCESS, pagination = pagination)
+                return@withLock DbReadProjectsResponse(status = ResponseStatus.SUCCESS, pagination = pagination)
             }
 
             projects.values.asSequence().sortedBy { it.name.asString() }
                 .drop(pagination.startIndex)
                 .take(pagination.size)
                 .toList().let {
-                    DbReadProjectResponse(
+                    DbReadProjectsResponse(
                         status = ResponseStatus.SUCCESS,
                         result = it,
                         pagination = pagination

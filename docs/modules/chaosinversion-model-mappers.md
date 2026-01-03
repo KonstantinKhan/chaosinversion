@@ -16,4 +16,6 @@ mappers/
 
 [chaosinversion-model-mappers](../../chaosinversion-model-mappers)
 
+## Rules and Conventions
 
+- To process requests, use the extension function `AppContext.setQuery` with the corresponding request in the function parameters 

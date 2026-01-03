@@ -42,6 +42,8 @@ src/main/kotlin/com/khan366kos/chaosinversion/transport/models/
 - All classes responsible for request must have the suffix `Request`
 - All classes responsible for response must have the suffix `Response`
 - All fields of serializable classes must be named using `@SerialName`, and the names must be written in `camelCase` style
+- All `Request` classes must implement `IBaseMessage` and `IBaseRequest`
+- All `Response` classes must implement `IBaseMessage` and `IBaseResponse`
 
 ## Examples
 

@@ -7,6 +7,8 @@ import com.khan366kos.chaosinversion.domain.models.project.Project
 
 data class AppContext(
     var requestId: Id = Id.NONE,
+    var requestProjectId: Id = Id.NONE,
+    var readProject: Project = Project(),
     val errors: List<Error> = emptyList(),
     var paginationRequest: Pagination = Pagination(),
     var projectsResponse: List<Project> = emptyList(),

@@ -1,7 +1,7 @@
-package com.khan366kos.chaosinversion.domain.models.db
+package com.khan366kos.chaosinversion.domain.models.project.repository
 
 import com.khan366kos.chaosinversion.domain.models.common.Pagination
 
-data class DbReadProjectRequest(
+data class DbReadProjectsRequest(
     val pagination: Pagination = Pagination(),
 )

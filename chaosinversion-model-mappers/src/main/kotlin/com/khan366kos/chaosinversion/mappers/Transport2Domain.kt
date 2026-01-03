@@ -6,11 +6,17 @@ import com.khan366kos.chaosinversion.domain.models.common.Pagination
 import com.khan366kos.chaosinversion.domain.models.project.Project
 import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationRequest
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
+import com.khan366kos.chaosinversion.transport.models.project.ReadProjectRequest
 import java.util.UUID
 
 fun AppContext.setQuery(request: ReadPaginationRequest) = apply {
     requestId = request.requestId?.let { Id(it) } ?: Id(UUID.randomUUID())
     paginationRequest = request.toDomain()
+}
+
+fun AppContext.setQuery(request: ReadProjectRequest) = apply {
+    requestId = request.requestId?.let { Id(it) } ?: Id(UUID.randomUUID())
+    requestProjectId = request.projectId?.let { Id(it) } ?: Id.NONE
 }
 
 fun ProjectTransport.toDomain(): Project = Project(
@@ -20,5 +26,4 @@ fun ProjectTransport.toDomain(): Project = Project(
 fun ReadPaginationRequest.toDomain(): Pagination = Pagination(
     page = page ?: 0,
     size = size ?: 10,
-
 )

@@ -2,7 +2,6 @@ package com.khan366kos.chaosinversion.mappers
 
 import com.khan366kos.chaosinversion.domain.models.AppContext
 import com.khan366kos.chaosinversion.domain.models.common.Error
-import com.khan366kos.chaosinversion.domain.models.common.Id
 import com.khan366kos.chaosinversion.domain.models.common.ProjectStatus
 import com.khan366kos.chaosinversion.domain.models.description.Description
 import com.khan366kos.chaosinversion.domain.models.project.Project
@@ -12,7 +11,28 @@ import com.khan366kos.chaosinversion.transport.models.common.ResultResponseTrans
 import com.khan366kos.chaosinversion.transport.models.description.DescriptionTransport
 import com.khan366kos.chaosinversion.transport.models.description.ProjectStatusTransport
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
+import com.khan366kos.chaosinversion.transport.models.project.ReadProjectResponse
 import kotlin.math.ceil
+
+fun AppContext.toReadProjectsResponse(): ReadPaginationResponse<ProjectTransport> = ReadPaginationResponse(
+    messageType = "ReadProjectsResponseWithPagination",
+    requestId = requestId.asString(),
+    result = if (errors.isEmpty()) ResultResponseTransport.SUCCESS else ResultResponseTransport.ERROR,
+    errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
+    data = projectsResponse.map { it.toTransport() },
+    page = paginationRequest.page,
+    size = paginationRequest.size,
+    totalElements = projectsResponse.size,
+    totalPages = ceil(projectsResponse.size.toDouble() / paginationRequest.size).toInt()
+)
+
+fun AppContext.toReadProjectResponse(): ReadProjectResponse = ReadProjectResponse(
+    messageType = "ReadProjectResponse",
+    requestId = requestId.asString(),
+    result = if (errors.isEmpty()) ResultResponseTransport.SUCCESS else ResultResponseTransport.ERROR,
+    errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
+    readProject = readProject.toTransport()
+)
 
 fun Project.toTransport() = ProjectTransport(
     id = id.asString(),
@@ -27,18 +47,6 @@ fun Description.toTransport() = DescriptionTransport(
         ProjectStatus.UNKNOWN -> ProjectStatusTransport.UNKNOWN
     },
     title = title.value
-)
-
-fun AppContext.toReadPaginationResponse(): ReadPaginationResponse<ProjectTransport> = ReadPaginationResponse(
-    messageType = "ReadProjectResponse",
-    requestId = requestId.takeIf { it.isNotEmpty() }?.asString() ?: Id.NONE.asString(),
-    result = if (errors.isEmpty()) ResultResponseTransport.SUCCESS else ResultResponseTransport.ERROR,
-    errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
-    data = projectsResponse.map { it.toTransport() },
-    page = paginationRequest.page,
-    size = paginationRequest.size,
-    totalElements = projectsResponse.size,
-    totalPages = ceil(projectsResponse.size.toDouble() / paginationRequest.size).toInt()
 )
 
 fun Error.toTransport() = RequestError(

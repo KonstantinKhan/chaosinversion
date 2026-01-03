@@ -1,10 +1,10 @@
-package com.khan366kos.chaosinversion.domain.models.db
+package com.khan366kos.chaosinversion.domain.models.project.repository
 
 import com.khan366kos.chaosinversion.domain.models.common.Pagination
 import com.khan366kos.chaosinversion.domain.models.common.ResponseStatus
 import com.khan366kos.chaosinversion.domain.models.project.Project
 
-data class DbReadProjectResponse(
+data class DbReadProjectsResponse(
     val status: ResponseStatus = ResponseStatus.UNKNOWN,
     val result: List<Project> = emptyList(),
     val pagination: Pagination = Pagination(),

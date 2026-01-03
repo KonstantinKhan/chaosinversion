@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotest)
 }
 
 dependencies {
@@ -9,7 +10,7 @@ dependencies {
     implementation(libs.ehcache)
     implementation(libs.kotlinx.coroutines.core)
 
-    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.engine)
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotlinx.coroutines.test)
 }
