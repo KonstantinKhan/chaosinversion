@@ -3,10 +3,11 @@ package com.khan366kos.chaosinversion.inmemory.project.repository
 import com.khan366kos.chaosinversion.domain.models.common.Id
 import com.khan366kos.chaosinversion.domain.models.common.Name
 import com.khan366kos.chaosinversion.domain.models.common.Pagination
-import com.khan366kos.chaosinversion.domain.models.project.repository.DbReadProjectsRequest
+import com.khan366kos.chaosinversion.domain.models.project.repository.DbProjectsRequest
 import com.khan366kos.chaosinversion.domain.models.mock.Projects
 import com.khan366kos.chaosinversion.domain.models.project.Project
-import com.khan366kos.chaosinversion.domain.models.project.repository.DbReadProjectIdRequest
+import com.khan366kos.chaosinversion.domain.models.project.repository.DbProjectIdRequest
+import com.khan366kos.chaosinversion.domain.models.project.repository.DbProjectRequest
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -21,11 +22,11 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
             runTest {
                 val project = Project(name = Name("Test Project"))
 
-                val result = repository.create(project)
+                val result = repository.create(DbProjectRequest(project))
 
-                result.id.shouldNotBeNull()
-                result.name.asString() shouldBe "Test Project"
-                result.id.asString().startsWith("inmemory-") shouldBe true
+                result.result.id.shouldNotBeNull()
+                result.result.name.asString() shouldBe "Test Project"
+                result.result.id.asString().startsWith("inmemory-") shouldBe true
             }
         }
 
@@ -34,29 +35,29 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
                 val projectId = Id("custom-id")
                 val project = Project(id = projectId, name = Name("Test Project"))
 
-                val result = repository.create(project)
+                val result = repository.create(DbProjectRequest(project))
 
-                result.id shouldBe projectId
-                result.name.asString() shouldBe "Test Project"
+                result.result.id shouldBe projectId
+                result.result.name.asString() shouldBe "Test Project"
             }
         }
 
         should("find a project by ID") {
             runTest {
                 val project = Project(name = Name("Test Project"))
-                val createdProject = repository.create(project)
+                val createdProject = repository.create(DbProjectRequest(project))
 
-                val foundProject = repository.project(DbReadProjectIdRequest(createdProject.id))
+                val foundProject = repository.read(DbProjectIdRequest(createdProject.result.id))
 
                 foundProject.shouldNotBeNull()
-                foundProject.result.id shouldBe createdProject.id
-                foundProject.result.name shouldBe createdProject.name
+                foundProject.result.id shouldBe createdProject.result.id
+                foundProject.result.name shouldBe createdProject.result.name
             }
         }
 
         should("return null when project is not found by ID") {
             runTest {
-                val foundProject = repository.project(DbReadProjectIdRequest(Id("non-existent-id")))
+                val foundProject = repository.read(DbProjectIdRequest(Id("non-existent-id")))
                 foundProject.result shouldBe Project()
                 foundProject.errors.size shouldNotBe 0
             }
@@ -65,7 +66,7 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
         should("find a project by name") {
             runTest {
                 val project = Project(name = Name("Unique Project Name"))
-                repository.create(project)
+                repository.create(DbProjectRequest(project))
 
                 val foundProject = repository.findByName(Name("Unique Project Name"))
 
@@ -84,15 +85,15 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
 
         should("find all projects with default pagination") {
             runTest {
-                val response = repository.projects(DbReadProjectsRequest())
+                val response = repository.allWithPagination(DbProjectsRequest())
                 response.result.size shouldBe response.pagination.size
             }
         }
 
         should("find all projects with custom pagination") {
             runTest {
-                val response = repository.projects(
-                    DbReadProjectsRequest(
+                val response = repository.allWithPagination(
+                    DbProjectsRequest(
                         pagination = Pagination(page = 1, size = 20),
                     )
                 )
@@ -111,8 +112,8 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
 
         should("find all projects with custom pagination and smaller size") {
             runTest {
-                val response = repository.projects(
-                    DbReadProjectsRequest(
+                val response = repository.allWithPagination(
+                    DbProjectsRequest(
                         pagination = Pagination(page = 6, size = 16),
                     )
                 )
@@ -132,13 +133,13 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
         should("update an existing project") {
             runTest {
                 val project = Project(name = Name("Original Name"))
-                val createdProject = repository.create(project)
+                val createdProject = repository.create(DbProjectRequest(project))
 
-                val updatedProject = createdProject.copy(name = Name("Updated Name"))
+                val updatedProject = createdProject.result.copy(name = Name("Updated Name"))
                 val result = repository.update(updatedProject)
 
                 result shouldBe updatedProject
-                repository.project(DbReadProjectIdRequest(createdProject.id)).result.name.asString() shouldBe "Updated Name"
+                repository.read(DbProjectIdRequest(createdProject.result.id)).result.name.asString() shouldBe "Updated Name"
             }
         }
 
@@ -154,11 +155,11 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
         should("delete an existing project") {
             runTest {
                 val project = Project(name = Name("Project to Delete"))
-                val createdProject = repository.create(project)
-                val result = repository.delete(createdProject.id)
+                val createdProject = repository.create(DbProjectRequest(project))
+                val result = repository.delete(createdProject.result.id)
 
                 result shouldBe true
-                repository.project(DbReadProjectIdRequest(createdProject.id)).result shouldBe Project()
+                repository.read(DbProjectIdRequest(createdProject.result.id)).result shouldBe Project()
             }
         }
 
