@@ -35,7 +35,7 @@ fun AppContext.toReadProjectResponse(): ReadProjectResponse = ReadProjectRespons
     requestId = requestId.asString(),
     result = if (errors.isEmpty()) ResultResponseTransport.SUCCESS else ResultResponseTransport.ERROR,
     errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
-    readProject = readProject.toTransport()
+    readProject = projectResponse.takeIf { it != Project() }?.toTransport()
 )
 
 fun AppContext.toCreateProjectResponse(): CreateProjectResponse = CreateProjectResponse(

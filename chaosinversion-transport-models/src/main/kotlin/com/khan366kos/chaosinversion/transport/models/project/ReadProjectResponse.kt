@@ -12,7 +12,7 @@ data class ReadProjectResponse(
     @SerialName("messageType")
     override val messageType: String,
     @SerialName("readProject")
-    val readProject: ProjectTransport,
+    val readProject: ProjectTransport?,
     override val requestId: String,
     override val result: ResultResponseTransport,
     override val errors: List<RequestError> = emptyList()

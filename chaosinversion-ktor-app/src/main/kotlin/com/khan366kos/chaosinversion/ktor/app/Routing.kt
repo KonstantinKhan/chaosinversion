@@ -1,6 +1,7 @@
 package com.khan366kos.chaosinversion.ktor.app
 
 import com.khan366kos.chaosinversion.ktor.app.controllers.createProject
+import com.khan366kos.chaosinversion.ktor.app.controllers.findAll
 import com.khan366kos.chaosinversion.ktor.app.controllers.readProject
 import com.khan366kos.chaosinversion.ktor.app.controllers.updateProject
 import com.khan366kos.chaosinversion.project.service.ProjectService
@@ -15,10 +16,13 @@ fun Application.project(projectService: ProjectService) {
     routing {
         route("/project") {
             get {
-                call.readProject(projectService)
+                call.findAll(projectService)
             }
             post {
                 call.createProject(projectService)
+            }
+            get("/{id}") {
+                call.readProject(projectService)
             }
             patch {
                 call.updateProject(projectService)

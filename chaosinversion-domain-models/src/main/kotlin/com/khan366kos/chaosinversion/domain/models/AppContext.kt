@@ -8,8 +8,8 @@ import java.util.Collections.emptyList
 
 data class AppContext(
     var requestId: Id = Id.NONE,
-    var requestProjectId: Id = Id.NONE,
 
+    var readProjectId: Id = Id.NONE,
     var readProject: Project = Project(),
     var createProject: Project = Project(),
     var updateProject: Project = Project(),

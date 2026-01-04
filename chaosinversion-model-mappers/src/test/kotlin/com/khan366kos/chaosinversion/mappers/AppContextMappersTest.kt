@@ -131,7 +131,7 @@ class AppContextMappersTest : ShouldSpec({
         }
 
         should("set project id correctly") {
-            context.requestProjectId shouldBe Id(projectId)
+            context.readProjectId shouldBe Id(projectId)
         }
 
         should("generate request id if not provided") {
@@ -145,7 +145,7 @@ class AppContextMappersTest : ShouldSpec({
             val context3 = AppContext()
             val request3 = ReadProjectRequest(requestId = "999")
             context3.setQuery(request3)
-            context3.requestProjectId shouldBe Id.NONE
+            context3.readProjectId shouldBe Id.NONE
         }
     }
 

@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReadProjectRequest(
     @SerialName("messageType")
-    override val messageType: String = "readProject",
+    override val messageType: String = "ReadProjectRequest",
     @SerialName("projectId")
     val projectId: String? = null,
     @SerialName("requestId")

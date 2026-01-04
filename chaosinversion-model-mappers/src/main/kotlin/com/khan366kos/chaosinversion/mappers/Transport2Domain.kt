@@ -29,7 +29,7 @@ fun AppContext.setQuery(request: CreateProjectRequest) = apply {
 
 fun AppContext.setQuery(request: ReadProjectRequest) = apply {
     requestId = request.requestId?.let { Id(it) } ?: Id(UUID.randomUUID())
-    requestProjectId = request.projectId?.let { Id(it) } ?: Id.NONE
+    readProjectId = request.projectId?.let { Id(it) } ?: Id.NONE
 }
 
 fun AppContext.setQuery(request: UpdateProjectRequest) = apply {
