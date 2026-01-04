@@ -38,7 +38,7 @@ suspend inline fun <reified T : IBaseMessage, reified U : IBaseMessage> Applicat
 
 suspend inline fun <reified T> ApplicationCall.recieveQuerySafe(): Result<T> = runCatching {
     when (request.httpMethod) {
-        HttpMethod.Post -> receive<CreateProjectRequest`>()
+        HttpMethod.Post -> receive<CreateProjectRequest>()
         HttpMethod.Get -> Json.decodeFromJsonElement<T>(buildJsonObject {
             request.queryParameters.entries().forEach { entry ->
                 when (val value = entry.value.firstOrNull()) {
