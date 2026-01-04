@@ -62,12 +62,6 @@ class InMemoryProjectRepository(
         )
     }
 
-    override suspend fun findByName(name: Name): Project? {
-        return mutex.withLock {
-            projects.values.find { it.name == name }
-        }
-    }
-
     override suspend fun allWithPagination(request: DbProjectsRequest): DbProjectsResponse {
         return mutex.withLock {
             val pagination = request.pagination
@@ -76,7 +70,7 @@ class InMemoryProjectRepository(
                 return@withLock DbProjectsResponse(status = ResponseStatus.SUCCESS, pagination = pagination)
             }
 
-            projects.values.asSequence().sortedBy { it.name.asString() }
+            projects.values.asSequence().sortedBy { it.description.title.value }
                 .drop(pagination.startIndex)
                 .take(pagination.size)
                 .toList().let {
@@ -89,21 +83,44 @@ class InMemoryProjectRepository(
         }
     }
 
-    override suspend fun update(project: Project): Project? {
-        return mutex.withLock {
-            if (projects.containsKey(project.id)) {
-                projects[project.id] = project
-                project
+    override suspend fun update(request: DbProjectRequest): DbProjectResponse {
+        val result = mutex.withLock {
+            if (projects.containsKey(request.project.id)) {
+                projects[request.project.id] = request.project
+                request.project
             } else {
-                null
+                Project()
             }
         }
+        return if (result != Project()) DbProjectResponse(
+            status = ResponseStatus.SUCCESS,
+            result = result
+        )
+        else DbProjectResponse(
+            status = ResponseStatus.FAILURE,
+            errors = listOf(
+                Error(
+                    message = "Not found project with id: ${request.project.id}",
+                    field = "projectId"
+                )
+            )
+        )
     }
 
-    override suspend fun delete(id: Id): Boolean {
-        return mutex.withLock {
-            projects.remove(id) != null
+    override suspend fun delete(request: DbProjectIdRequest): DbProjectResponse {
+        val result = mutex.withLock {
+            val project = projects[request.projectId] ?: Project()
+            projects.remove(request.projectId)
+            project
         }
+        return if (result != Project()) DbProjectResponse(
+            status = ResponseStatus.SUCCESS,
+            result = result,
+        )
+        else DbProjectResponse(
+            status = ResponseStatus.FAILURE,
+            errors = listOf(Error(message = "Not found project with id: ${request.projectId}", field = "projectId"))
+        )
     }
 
     override suspend fun size(): Int = projects.size

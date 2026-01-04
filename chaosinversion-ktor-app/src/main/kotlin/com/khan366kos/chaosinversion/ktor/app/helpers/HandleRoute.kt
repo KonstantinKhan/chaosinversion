@@ -1,9 +1,15 @@
 package com.khan366kos.chaosinversion.ktor.app.helpers
 
 import com.khan366kos.chaosinversion.domain.models.AppContext
+import com.khan366kos.chaosinversion.domain.models.project.Project
 import com.khan366kos.chaosinversion.transport.models.common.IBaseMessage
 import com.khan366kos.chaosinversion.transport.models.common.RequestError
+import com.khan366kos.chaosinversion.transport.models.project.CreateProjectRequest
+import io.ktor.http.HttpMethod
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.plugins.origin
+import io.ktor.server.request.httpMethod
+import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
@@ -21,21 +27,26 @@ suspend inline fun <reified T : IBaseMessage, reified U : IBaseMessage> Applicat
             respond(response)
         },
         onFailure = { throwable ->
-            respond(RequestError(
-                message = throwable.message?: "Unknown error",
-            ))
+            respond(
+                RequestError(
+                    message = throwable.message ?: "Unknown error",
+                )
+            )
         }
     )
 }
 
-inline fun <reified T> ApplicationCall.recieveQuerySafe(): Result<T> = runCatching {
-    val jsonObject = buildJsonObject {
-        request.queryParameters.entries().forEach { entry ->
-            when (val value = entry.value.firstOrNull()) {
-                null -> return@forEach
-                else -> put(entry.key, JsonPrimitive(value))
+suspend inline fun <reified T> ApplicationCall.recieveQuerySafe(): Result<T> = runCatching {
+    when (request.httpMethod) {
+        HttpMethod.Post -> receive<CreateProjectRequest`>()
+        HttpMethod.Get -> Json.decodeFromJsonElement<T>(buildJsonObject {
+            request.queryParameters.entries().forEach { entry ->
+                when (val value = entry.value.firstOrNull()) {
+                    null -> return@forEach
+                    else -> put(entry.key, JsonPrimitive(value))
+                }
             }
-        }
-    }
-    Json.decodeFromJsonElement<T>(jsonObject)
+        })
+        else -> {}
+    } as T
 }

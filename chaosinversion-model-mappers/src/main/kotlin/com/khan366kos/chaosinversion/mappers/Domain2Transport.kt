@@ -10,6 +10,7 @@ import com.khan366kos.chaosinversion.transport.models.common.RequestError
 import com.khan366kos.chaosinversion.transport.models.common.ResultResponseTransport
 import com.khan366kos.chaosinversion.transport.models.description.DescriptionTransport
 import com.khan366kos.chaosinversion.transport.models.description.ProjectStatusTransport
+import com.khan366kos.chaosinversion.transport.models.project.CreateProjectResponse
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
 import com.khan366kos.chaosinversion.transport.models.project.ReadProjectResponse
 import kotlin.math.ceil
@@ -32,6 +33,14 @@ fun AppContext.toReadProjectResponse(): ReadProjectResponse = ReadProjectRespons
     result = if (errors.isEmpty()) ResultResponseTransport.SUCCESS else ResultResponseTransport.ERROR,
     errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
     readProject = readProject.toTransport()
+)
+
+fun AppContext.toCreateProjectResponse(): CreateProjectResponse = CreateProjectResponse(
+    messageType = "CreateProjectResponse",
+    requestId = requestId.asString(),
+    result = if (errors.isEmpty()) ResultResponseTransport.SUCCESS else ResultResponseTransport.ERROR,
+    errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
+    createProject = createProject.toTransport()
 )
 
 fun Project.toTransport() = ProjectTransport(

@@ -3,8 +3,12 @@ package com.khan366kos.chaosinversion.mappers
 import com.khan366kos.chaosinversion.domain.models.AppContext
 import com.khan366kos.chaosinversion.domain.models.common.Id
 import com.khan366kos.chaosinversion.domain.models.common.Pagination
+import com.khan366kos.chaosinversion.domain.models.common.Title
+import com.khan366kos.chaosinversion.domain.models.description.Description
 import com.khan366kos.chaosinversion.domain.models.project.Project
 import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationRequest
+import com.khan366kos.chaosinversion.transport.models.project.CreatableProject
+import com.khan366kos.chaosinversion.transport.models.project.CreateProjectRequest
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
 import com.khan366kos.chaosinversion.transport.models.project.ReadProjectRequest
 import java.util.UUID
@@ -14,10 +18,21 @@ fun AppContext.setQuery(request: ReadPaginationRequest) = apply {
     paginationRequest = request.toDomain()
 }
 
+fun AppContext.setQuery(request: CreateProjectRequest) = apply {
+    requestId = request.requestId?.let { Id(it) } ?: Id(UUID.randomUUID())
+    createProject = request.createProject.toDomain()
+}
+
 fun AppContext.setQuery(request: ReadProjectRequest) = apply {
     requestId = request.requestId?.let { Id(it) } ?: Id(UUID.randomUUID())
     requestProjectId = request.projectId?.let { Id(it) } ?: Id.NONE
 }
+
+fun CreatableProject.toDomain() = Project(
+    description = Description(
+        title = Title(description.title)
+    ),
+)
 
 fun ProjectTransport.toDomain(): Project = Project(
     id = Id(id)

@@ -6,6 +6,5 @@ import com.khan366kos.chaosinversion.domain.models.description.Description
 
 data class Project(
     val id: Id = Id.NONE,
-    val name: Name = Name.NONE,
     val description: Description = Description(),
 )

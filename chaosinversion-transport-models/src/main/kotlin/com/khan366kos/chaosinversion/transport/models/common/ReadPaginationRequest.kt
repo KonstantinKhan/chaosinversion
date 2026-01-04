@@ -8,7 +8,7 @@ data class ReadPaginationRequest(
     @SerialName("requestId")
     override val requestId: String? = null,
     @SerialName("messageType")
-    override val messageType: String = "Unknown messageType",
+    override val messageType: String = "ReadPaginationRequest",
     @SerialName("page")
     val page: Int? = null,
     @SerialName("size")

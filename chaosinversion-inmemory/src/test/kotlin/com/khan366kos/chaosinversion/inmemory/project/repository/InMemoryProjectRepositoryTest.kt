@@ -3,6 +3,9 @@ package com.khan366kos.chaosinversion.inmemory.project.repository
 import com.khan366kos.chaosinversion.domain.models.common.Id
 import com.khan366kos.chaosinversion.domain.models.common.Name
 import com.khan366kos.chaosinversion.domain.models.common.Pagination
+import com.khan366kos.chaosinversion.domain.models.common.ProjectStatus
+import com.khan366kos.chaosinversion.domain.models.common.Title
+import com.khan366kos.chaosinversion.domain.models.description.Description
 import com.khan366kos.chaosinversion.domain.models.project.repository.DbProjectsRequest
 import com.khan366kos.chaosinversion.domain.models.mock.Projects
 import com.khan366kos.chaosinversion.domain.models.project.Project
@@ -20,7 +23,13 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
 
         should("create a project with generated ID when ID is empty") {
             runTest {
-                val project = Project(name = Name("Test Project"))
+                val project = Project(
+                    name = Name("Test Project"),
+                    description = Description(
+                        status = ProjectStatus.ACTIVE,
+                        title = Title("Title")
+                    ),
+                )
 
                 val result = repository.create(DbProjectRequest(project))
 
@@ -136,9 +145,9 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
                 val createdProject = repository.create(DbProjectRequest(project))
 
                 val updatedProject = createdProject.result.copy(name = Name("Updated Name"))
-                val result = repository.update(updatedProject)
+                val result = repository.update(DbProjectRequest(updatedProject))
 
-                result shouldBe updatedProject
+                result.result shouldBe updatedProject
                 repository.read(DbProjectIdRequest(createdProject.result.id)).result.name.asString() shouldBe "Updated Name"
             }
         }
@@ -146,9 +155,10 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
         should("return null when updating a non-existent project") {
             runTest {
                 val nonExistentProject = Project(id = Id("non-existent"), name = Name("Some Name"))
-                val result = repository.update(nonExistentProject)
+                val result = repository.update(DbProjectRequest(nonExistentProject))
 
-                result shouldBe null
+                result.result shouldBe Project()
+                result.errors.size shouldNotBe 0
             }
         }
 
@@ -156,18 +166,17 @@ class InMemoryProjectRepositoryTest : ShouldSpec({
             runTest {
                 val project = Project(name = Name("Project to Delete"))
                 val createdProject = repository.create(DbProjectRequest(project))
-                val result = repository.delete(createdProject.result.id)
+                val result = repository.delete(DbProjectIdRequest(createdProject.result.id))
 
-                result shouldBe true
-                repository.read(DbProjectIdRequest(createdProject.result.id)).result shouldBe Project()
+                result.result shouldBe createdProject.result
             }
         }
 
         should("return false when deleting a non-existent project") {
             runTest {
-                val result = repository.delete(Id("non-existent-id"))
+                val result = repository.delete(DbProjectIdRequest(Id("non-existent-id")))
 
-                result shouldBe false
+                result.result shouldBe Project()
             }
         }
     }
