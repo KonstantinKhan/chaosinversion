@@ -9,10 +9,11 @@ import java.util.Collections.emptyList
 data class AppContext(
     var requestId: Id = Id.NONE,
 
+    var createProject: Project = Project(),
     var readProjectId: Id = Id.NONE,
     var readProject: Project = Project(),
-    var createProject: Project = Project(),
     var updateProject: Project = Project(),
+    var deleteProjectId: Id = Id.NONE,
 
     val errors: MutableList<Error> = mutableListOf(),
     var paginationRequest: Pagination = Pagination(),

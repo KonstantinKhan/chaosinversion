@@ -1,11 +1,13 @@
 package com.khan366kos.chaosinversion.ktor.app
 
 import com.khan366kos.chaosinversion.ktor.app.controllers.createProject
+import com.khan366kos.chaosinversion.ktor.app.controllers.deleteProject
 import com.khan366kos.chaosinversion.ktor.app.controllers.findAll
 import com.khan366kos.chaosinversion.ktor.app.controllers.readProject
 import com.khan366kos.chaosinversion.ktor.app.controllers.updateProject
 import com.khan366kos.chaosinversion.project.service.ProjectService
 import io.ktor.server.application.*
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.patch
 import io.ktor.server.routing.post
@@ -26,6 +28,9 @@ fun Application.project(projectService: ProjectService) {
             }
             patch {
                 call.updateProject(projectService)
+            }
+            delete {
+                call.deleteProject(projectService)
             }
         }
     }

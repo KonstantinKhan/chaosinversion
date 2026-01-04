@@ -11,6 +11,7 @@ import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationReque
 import com.khan366kos.chaosinversion.transport.models.description.ProjectStatusTransport
 import com.khan366kos.chaosinversion.transport.models.project.CreatableProject
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectRequest
+import com.khan366kos.chaosinversion.transport.models.project.DeleteProjectRequest
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
 import com.khan366kos.chaosinversion.transport.models.project.ReadProjectRequest
 import com.khan366kos.chaosinversion.transport.models.project.UpdatableProject
@@ -35,6 +36,11 @@ fun AppContext.setQuery(request: ReadProjectRequest) = apply {
 fun AppContext.setQuery(request: UpdateProjectRequest) = apply {
     requestId = request.requestId?.let { Id(it) } ?: Id(UUID.randomUUID())
     updateProject = request.updateProject.toDomain()
+}
+
+fun AppContext.setQuery(request: DeleteProjectRequest) = apply {
+    requestId = request.requestId?.let { Id(it) } ?: Id(UUID.randomUUID())
+    deleteProjectId = Id(request.projectId)
 }
 
 fun CreatableProject.toDomain() = Project(

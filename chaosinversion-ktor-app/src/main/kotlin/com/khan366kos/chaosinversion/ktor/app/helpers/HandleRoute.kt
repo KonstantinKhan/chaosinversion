@@ -4,6 +4,7 @@ import com.khan366kos.chaosinversion.domain.models.AppContext
 import com.khan366kos.chaosinversion.transport.models.common.IBaseMessage
 import com.khan366kos.chaosinversion.transport.models.common.RequestError
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectRequest
+import com.khan366kos.chaosinversion.transport.models.project.DeleteProjectRequest
 import com.khan366kos.chaosinversion.transport.models.project.UpdateProjectRequest
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.ApplicationCall
@@ -20,7 +21,6 @@ suspend inline fun <reified T : IBaseMessage, reified U : IBaseMessage> Applicat
     crossinline block: suspend AppContext.(T) -> U,
 ) {
     val requestResult = recieveQuerySafe<T>()
-    println("requestResult: $requestResult")
     val context = AppContext()
     requestResult.fold(
         onSuccess = { request ->
@@ -57,6 +57,7 @@ suspend inline fun <reified T> ApplicationCall.recieveQuerySafe(): Result<T> = r
                 Json.decodeFromJsonElement<T>(buildJsonObject { put("projectId", request.local.uri.split("/").last()) })
             }
         }
+        HttpMethod.Delete -> receive<DeleteProjectRequest>()
 
         else -> {}
     } as T

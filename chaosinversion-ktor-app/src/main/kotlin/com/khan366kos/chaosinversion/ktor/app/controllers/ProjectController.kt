@@ -6,6 +6,8 @@ import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationReque
 import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationResponse
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectRequest
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectResponse
+import com.khan366kos.chaosinversion.transport.models.project.DeleteProjectRequest
+import com.khan366kos.chaosinversion.transport.models.project.DeleteProjectResponse
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
 import com.khan366kos.chaosinversion.transport.models.project.ReadProjectRequest
 import com.khan366kos.chaosinversion.transport.models.project.ReadProjectResponse
@@ -34,5 +36,11 @@ suspend fun ApplicationCall.readProject(projectService: ProjectService) {
 suspend fun ApplicationCall.updateProject(projectService: ProjectService) {
     handleRoute<UpdateProjectRequest, UpdateProjectResponse> { request ->
         projectService.updateProject(this, request)
+    }
+}
+
+suspend fun ApplicationCall.deleteProject(projectService: ProjectService) {
+    handleRoute<DeleteProjectRequest, DeleteProjectResponse> { request ->
+        projectService.deleteProject(this, request)
     }
 }

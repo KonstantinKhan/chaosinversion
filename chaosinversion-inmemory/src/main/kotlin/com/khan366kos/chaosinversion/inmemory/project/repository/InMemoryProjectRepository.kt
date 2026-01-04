@@ -142,6 +142,7 @@ class InMemoryProjectRepository(
     }
 
     override suspend fun delete(request: DbProjectIdRequest): DbProjectResponse {
+        println("request: $request")
         val result = mutex.withLock {
             val project = projects[request.projectId] ?: Project()
             projects.remove(request.projectId)

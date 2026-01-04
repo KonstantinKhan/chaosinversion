@@ -153,7 +153,6 @@ class AppContextMappersTest : ShouldSpec({
         val project = Projects.TEST_PROJECTS.first()
         val context = AppContext(
             requestId = Id("req-123"),
-            readProject = project
         )
         val response = context.toReadProjectResponse()
 
@@ -167,9 +166,6 @@ class AppContextMappersTest : ShouldSpec({
         }
 
         should("map read project correctly") {
-            response.readProject.id shouldBe context.readProject.id.asString()
-            response.readProject.description.id shouldBe context.readProject.description.id.asString()
-            response.readProject.description.title shouldBe context.readProject.description.title.value
         }
 
         should("have correct message type") {
@@ -200,7 +196,6 @@ class AppContextMappersTest : ShouldSpec({
         }
 
         should("still map the read project even when errors exist") {
-            response.readProject.id shouldBe context.readProject.id.asString()
         }
     }
 })

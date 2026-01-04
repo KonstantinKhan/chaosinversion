@@ -9,6 +9,7 @@ import com.khan366kos.chaosinversion.domain.models.project.repository.DbProjects
 import com.khan366kos.chaosinversion.domain.models.project.repository.IProjectRepository
 import com.khan366kos.chaosinversion.mappers.setQuery
 import com.khan366kos.chaosinversion.mappers.toCreateProjectResponse
+import com.khan366kos.chaosinversion.mappers.toDeleteProjectResponse
 import com.khan366kos.chaosinversion.mappers.toReadProjectResponse
 import com.khan366kos.chaosinversion.mappers.toReadProjectsResponse
 import com.khan366kos.chaosinversion.mappers.toUpdateProjectResponse
@@ -16,6 +17,8 @@ import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationReque
 import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationResponse
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectRequest
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectResponse
+import com.khan366kos.chaosinversion.transport.models.project.DeleteProjectRequest
+import com.khan366kos.chaosinversion.transport.models.project.DeleteProjectResponse
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
 import com.khan366kos.chaosinversion.transport.models.project.ReadProjectRequest
 import com.khan366kos.chaosinversion.transport.models.project.ReadProjectResponse
@@ -87,5 +90,21 @@ class ProjectService(val repo: IProjectRepository) {
         }
 
         return context.toUpdateProjectResponse()
+    }
+
+    suspend fun deleteProject(context: AppContext, request: DeleteProjectRequest): DeleteProjectResponse {
+        context.setQuery(request)
+        val result = repo.delete(DbProjectIdRequest(context.deleteProjectId))
+        if (result.status == ResponseStatus.SUCCESS) {
+            context.apply {
+                projectResponse = result.result
+            }
+        } else {
+            context.apply {
+                errors.addAll(result.errors)
+            }
+        }
+
+        return context.toDeleteProjectResponse()
     }
 }

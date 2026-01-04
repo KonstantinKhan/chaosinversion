@@ -13,6 +13,7 @@ import com.khan366kos.chaosinversion.transport.models.common.ResultResponseTrans
 import com.khan366kos.chaosinversion.transport.models.description.DescriptionTransport
 import com.khan366kos.chaosinversion.transport.models.description.ProjectStatusTransport
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectResponse
+import com.khan366kos.chaosinversion.transport.models.project.DeleteProjectResponse
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
 import com.khan366kos.chaosinversion.transport.models.project.ReadProjectResponse
 import com.khan366kos.chaosinversion.transport.models.project.UpdateProjectResponse
@@ -51,6 +52,14 @@ fun AppContext.toUpdateProjectResponse(): UpdateProjectResponse = UpdateProjectR
     result = if (errors.isEmpty()) ResultResponseTransport.SUCCESS else ResultResponseTransport.ERROR,
     errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
     updateProject = projectResponse.takeIf { it != Project() }?.toTransport()
+)
+
+fun AppContext.toDeleteProjectResponse(): DeleteProjectResponse = DeleteProjectResponse(
+    messageType = "DeleteProjectResponse",
+    requestId = requestId.asString(),
+    result = if (errors.isEmpty()) ResultResponseTransport.SUCCESS else ResultResponseTransport.ERROR,
+    errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
+    deleteProject = projectResponse.takeIf { it != Project() }?.toTransport()
 )
 
 fun Project.toTransport() = ProjectTransport(
