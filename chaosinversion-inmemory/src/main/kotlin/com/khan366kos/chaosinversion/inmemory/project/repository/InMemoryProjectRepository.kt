@@ -3,7 +3,9 @@ package com.khan366kos.chaosinversion.inmemory.project.repository
 import com.khan366kos.chaosinversion.domain.models.common.Error
 import com.khan366kos.chaosinversion.domain.models.common.Id
 import com.khan366kos.chaosinversion.domain.models.common.Name
+import com.khan366kos.chaosinversion.domain.models.common.ProjectStatus
 import com.khan366kos.chaosinversion.domain.models.common.ResponseStatus
+import com.khan366kos.chaosinversion.domain.models.common.Title
 import com.khan366kos.chaosinversion.domain.models.project.repository.DbProjectsRequest
 import com.khan366kos.chaosinversion.domain.models.project.repository.DbProjectsResponse
 import com.khan366kos.chaosinversion.domain.models.project.Project
@@ -85,9 +87,41 @@ class InMemoryProjectRepository(
 
     override suspend fun update(request: DbProjectRequest): DbProjectResponse {
         val result = mutex.withLock {
-            if (projects.containsKey(request.project.id)) {
-                projects[request.project.id] = request.project
-                request.project
+            val existingProject = projects[request.project.id]
+            println("existing project $existingProject")
+            if (existingProject != null) {
+                val updatedDescription = if (existingProject.description != request.project.description) {
+                    val updatedStatus = if (existingProject.description.status != request.project.description.status
+                        &&
+                        request.project.description.status != ProjectStatus.UNKNOWN
+                    )
+                        request.project.description.status
+                    else existingProject.description.status
+
+                    val updatedTitle =
+                        if (existingProject.description.title != request.project.description.title
+                            &&
+                            request.project.description.title != Title.NONE
+                        )
+                            request.project.description.title
+                        else existingProject.description.title
+
+                    existingProject.description.copy(
+                        status = updatedStatus,
+                        title = updatedTitle
+                    )
+                } else {
+                    existingProject.description
+                }
+
+                val updatedProject = existingProject.copy(
+                    description = updatedDescription
+                )
+
+                println("Updated project: $updatedProject")
+
+                projects[request.project.id] = updatedProject
+                updatedProject
             } else {
                 Project()
             }

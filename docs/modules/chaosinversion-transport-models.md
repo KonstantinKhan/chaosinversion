@@ -6,7 +6,7 @@ Describes transport models
 
 ## Location
 
-[chaosinversion-transport-models](../../chaosinversion-transport-models)
+[chaosinversion-transport-models](../../chaosinversion-transport-models/src/main/kotlin/com/khan366kos/chaosinversion/transport/models)
 
 ## Directory Structure
 
@@ -24,7 +24,15 @@ src/main/kotlin/com/khan366kos/chaosinversion/transport/models/
 ├── finances/
 │   └── Finances.kt
 ├── project/
-│   └── ProjectTransport.kt
+│   ├── CreateProjectRequest.kt
+│   ├── CreateProjectResponse.kt
+│   ├── CreatableProject.kt
+│   ├── ProjectTransport.kt
+│   ├── ReadProjectRequest.kt
+│   ├── ReadProjectResponse.kt
+│   ├── UpdatableProject.kt
+│   ├── UpdateProjectRequest.kt
+│   └── UpdateProjectResponse.kt
 ├── schedule/
 │   └── Schedule.kt
 ├── structure/

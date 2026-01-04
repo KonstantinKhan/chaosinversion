@@ -2,7 +2,9 @@ package com.khan366kos.chaosinversion.mappers
 
 import com.khan366kos.chaosinversion.domain.models.AppContext
 import com.khan366kos.chaosinversion.domain.models.common.Error
+import com.khan366kos.chaosinversion.domain.models.common.Id
 import com.khan366kos.chaosinversion.domain.models.common.ProjectStatus
+import com.khan366kos.chaosinversion.domain.models.common.Title
 import com.khan366kos.chaosinversion.domain.models.description.Description
 import com.khan366kos.chaosinversion.domain.models.project.Project
 import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationResponse
@@ -13,6 +15,7 @@ import com.khan366kos.chaosinversion.transport.models.description.ProjectStatusT
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectResponse
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
 import com.khan366kos.chaosinversion.transport.models.project.ReadProjectResponse
+import com.khan366kos.chaosinversion.transport.models.project.UpdateProjectResponse
 import kotlin.math.ceil
 
 fun AppContext.toReadProjectsResponse(): ReadPaginationResponse<ProjectTransport> = ReadPaginationResponse(
@@ -42,6 +45,13 @@ fun AppContext.toCreateProjectResponse(): CreateProjectResponse = CreateProjectR
     errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
     createProject = createProject.toTransport()
 )
+fun AppContext.toUpdateProjectResponse(): UpdateProjectResponse = UpdateProjectResponse(
+    messageType = "UpdateProjectResponse",
+    requestId = requestId.asString(),
+    result = if (errors.isEmpty()) ResultResponseTransport.SUCCESS else ResultResponseTransport.ERROR,
+    errors = errors.takeIf { it.isNotEmpty() }?.map { it.toTransport() } ?: emptyList(),
+    updateProject = projectResponse.takeIf { it != Project() }?.toTransport()
+)
 
 fun Project.toTransport() = ProjectTransport(
     id = id.asString(),
@@ -49,13 +59,13 @@ fun Project.toTransport() = ProjectTransport(
 )
 
 fun Description.toTransport() = DescriptionTransport(
-    id = id.asString(),
+    id = id.takeIf { it != Id.NONE }?.asString(),
     status = when (status) {
         ProjectStatus.ACTIVE -> ProjectStatusTransport.ACTIVE
         ProjectStatus.PENDING -> ProjectStatusTransport.PENDING
         ProjectStatus.UNKNOWN -> ProjectStatusTransport.UNKNOWN
     },
-    title = title.value
+    title = title.takeIf { it != Title.NONE }?.asString()
 )
 
 fun Error.toTransport() = RequestError(

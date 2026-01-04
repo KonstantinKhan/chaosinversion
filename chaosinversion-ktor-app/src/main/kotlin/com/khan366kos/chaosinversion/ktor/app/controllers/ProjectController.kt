@@ -7,6 +7,8 @@ import com.khan366kos.chaosinversion.transport.models.common.ReadPaginationRespo
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectRequest
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectResponse
 import com.khan366kos.chaosinversion.transport.models.project.ProjectTransport
+import com.khan366kos.chaosinversion.transport.models.project.UpdateProjectRequest
+import com.khan366kos.chaosinversion.transport.models.project.UpdateProjectResponse
 import io.ktor.server.application.ApplicationCall
 
 suspend fun ApplicationCall.readProject(projectService: ProjectService) {
@@ -17,7 +19,12 @@ suspend fun ApplicationCall.readProject(projectService: ProjectService) {
 
 suspend fun ApplicationCall.createProject(projectService: ProjectService) {
     handleRoute<CreateProjectRequest, CreateProjectResponse> { request ->
-        println("request: $request")
         projectService.createProject(this, request)
+    }
+}
+
+suspend fun ApplicationCall.updateProject(projectService: ProjectService) {
+    handleRoute<UpdateProjectRequest, UpdateProjectResponse> { request ->
+        projectService.updateProject(this, request)
     }
 }

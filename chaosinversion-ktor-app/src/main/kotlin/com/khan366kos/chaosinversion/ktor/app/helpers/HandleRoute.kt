@@ -1,13 +1,12 @@
 package com.khan366kos.chaosinversion.ktor.app.helpers
 
 import com.khan366kos.chaosinversion.domain.models.AppContext
-import com.khan366kos.chaosinversion.domain.models.project.Project
 import com.khan366kos.chaosinversion.transport.models.common.IBaseMessage
 import com.khan366kos.chaosinversion.transport.models.common.RequestError
 import com.khan366kos.chaosinversion.transport.models.project.CreateProjectRequest
+import com.khan366kos.chaosinversion.transport.models.project.UpdateProjectRequest
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.plugins.origin
 import io.ktor.server.request.httpMethod
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -39,6 +38,8 @@ suspend inline fun <reified T : IBaseMessage, reified U : IBaseMessage> Applicat
 suspend inline fun <reified T> ApplicationCall.recieveQuerySafe(): Result<T> = runCatching {
     when (request.httpMethod) {
         HttpMethod.Post -> receive<CreateProjectRequest>()
+        HttpMethod.Patch -> receive<UpdateProjectRequest>()
+
         HttpMethod.Get -> Json.decodeFromJsonElement<T>(buildJsonObject {
             request.queryParameters.entries().forEach { entry ->
                 when (val value = entry.value.firstOrNull()) {
@@ -47,6 +48,7 @@ suspend inline fun <reified T> ApplicationCall.recieveQuerySafe(): Result<T> = r
                 }
             }
         })
+
         else -> {}
     } as T
 }

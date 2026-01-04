@@ -4,11 +4,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DescriptionTransport(
+data class UpdateDescriptionTransport(
     @SerialName("id")
-    val id: String?,
+    val id: String? = null,
     @SerialName("status")
-    val status: ProjectStatusTransport?,
+    val status: ProjectStatusTransport? = null,
     @SerialName("title")
-    val title: String?,
+    val title: String? = null,
 )

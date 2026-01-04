@@ -4,6 +4,7 @@ import com.khan366kos.chaosinversion.domain.models.common.Error
 import com.khan366kos.chaosinversion.domain.models.common.Id
 import com.khan366kos.chaosinversion.domain.models.common.Pagination
 import com.khan366kos.chaosinversion.domain.models.project.Project
+import java.util.Collections.emptyList
 
 data class AppContext(
     var requestId: Id = Id.NONE,
@@ -11,8 +12,9 @@ data class AppContext(
 
     var readProject: Project = Project(),
     var createProject: Project = Project(),
+    var updateProject: Project = Project(),
 
-    val errors: List<Error> = emptyList(),
+    val errors: MutableList<Error> = mutableListOf(),
     var paginationRequest: Pagination = Pagination(),
 
     var projectsResponse: List<Project> = emptyList(),
